@@ -37,7 +37,12 @@ export type GeminiModel = (typeof GEMINI_MODELS)[number];
 
 // ─── 3. Env-var keys – template-literal union type ────────────────────────────
 
-type GeminiEnvKey = 'GEMINI_API_KEY' | 'API_KEY' | 'GEMINI_MODEL' | 'GEMINI_TIMEOUT_MS';
+type GeminiEnvKey =
+  | 'GEMINI_API_KEY'
+  | 'VITE_GEMINI_API_KEY'
+  | 'API_KEY'
+  | 'GEMINI_MODEL'
+  | 'GEMINI_TIMEOUT_MS';
 type AppEnvKey    = 'VITE_BASE_PATH';
 export type EnvKey = GeminiEnvKey | AppEnvKey;
 
@@ -128,7 +133,10 @@ function readRaw(key: EnvKey): string {
 // narrowing pitfalls; the public API surface (loadEnvConfig) composes them.
 
 function resolveApiKey(): GeminiApiKey | null {
-  const raw = readRaw('GEMINI_API_KEY') || readRaw('API_KEY');
+  const raw =
+    readRaw('GEMINI_API_KEY') ||
+    readRaw('VITE_GEMINI_API_KEY') ||
+    readRaw('API_KEY');
   return isValidApiKey(raw) ? raw : null;
 }
 
@@ -156,7 +164,7 @@ export function loadEnvConfig(): EnvResult<AppEnvConfig> {
   if (apiKey === null) {
     return {
       ok:    false,
-      error: 'GEMINI_API_KEY is missing or invalid. Add it to .env.local.',
+      error: 'GEMINI_API_KEY is missing or invalid. Set GEMINI_API_KEY (or VITE_GEMINI_API_KEY) in .env.local, .env, or your deployment environment.',
     };
   }
 
@@ -192,8 +200,10 @@ export const env: EnvResult<AppEnvConfig> = loadEnvConfig();
 // Import this in services that must have the config to proceed.
 
 export function requireEnv(): AppEnvConfig {
-  if (isEnvError(env)) {
-    throw new Error(env.error);
+  // Re-evaluate on demand so runtime env changes (tests/Node scripts) are respected.
+  const current = loadEnvConfig();
+  if (isEnvError(current)) {
+    throw new Error(current.error);
   }
-  return env.value;
+  return current.value;
 }

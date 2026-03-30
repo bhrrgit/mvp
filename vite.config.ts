@@ -6,13 +6,18 @@ export default defineConfig(({ mode }) => {
   // Load env files from project root (.env, .env.local, .env.[mode])
   const env = loadEnv(mode, process.cwd(), '');
 
-  const apiKey = env.GEMINI_API_KEY || process.env.GEMINI_API_KEY || '';
+  const apiKey =
+    env.GEMINI_API_KEY ||
+    env.VITE_GEMINI_API_KEY ||
+    process.env.GEMINI_API_KEY ||
+    process.env.VITE_GEMINI_API_KEY ||
+    '';
   const basePath = normalizeBasePath(env.VITE_BASE_PATH || process.env.VITE_BASE_PATH);
 
   if (!apiKey || apiKey === 'PLACEHOLDER_API_KEY') {
     console.warn(
-      '\n⚠️  GEMINI_API_KEY is not set or is using the placeholder value.\n' +
-      '   Set a valid key in .env.local to enable AI workflow generation.\n'
+      '\n⚠️  Gemini API key is not set or is using the placeholder value.\n' +
+      '   Set GEMINI_API_KEY (or VITE_GEMINI_API_KEY) in .env.local/.env.\n'
     );
   }
 
@@ -30,6 +35,7 @@ export default defineConfig(({ mode }) => {
       // For production, move API calls to a backend proxy.
       'process.env.API_KEY': JSON.stringify(apiKey),
       'process.env.GEMINI_API_KEY': JSON.stringify(apiKey),
+      'process.env.VITE_GEMINI_API_KEY': JSON.stringify(apiKey),
     },
     resolve: {
       alias: {

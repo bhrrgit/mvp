@@ -32,6 +32,8 @@ declare namespace NodeJS {
   interface ProcessEnv {
     /** Gemini API key – injected by Vite's define block at build time */
     readonly GEMINI_API_KEY?: string;
+    /** Vite-style alias for Gemini API key */
+    readonly VITE_GEMINI_API_KEY?: string;
     /** Legacy alias kept for backward compatibility */
     readonly API_KEY?: string;
     /**
