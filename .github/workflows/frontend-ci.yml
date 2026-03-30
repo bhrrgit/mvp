@@ -17,6 +17,7 @@ jobs:
     env:
       # CI build validation should use root base path.
       VITE_BASE_PATH: /
+      GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -29,6 +30,18 @@ jobs:
 
       - name: Install dependencies
         run: npm ci
+
+      - name: Ensure GEMINI_API_KEY for live workflow validation
+        if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+        run: |
+          if [ -z "$GEMINI_API_KEY" ]; then
+            echo "GEMINI_API_KEY is required for live workflow validation on main."
+            exit 1
+          fi
+
+      - name: Validate generated workflow JSON (live model, no mock)
+        if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+        run: node scripts/validate-generated-workflow.mjs
 
       - name: Build frontend
         run: npm run build
