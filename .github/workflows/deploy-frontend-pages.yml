@@ -18,6 +18,8 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
+    environment:
+      name: github-pages
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -48,9 +50,19 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Ensure GEMINI_API_KEY is available for production build
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: |
+          if [ -z "$GEMINI_API_KEY" ]; then
+            echo "GEMINI_API_KEY is missing in this job context."
+            echo "If you stored it as an Environment secret, make sure this job is bound to that environment."
+            exit 1
+          fi
+
       - name: Build frontend
         env:
-          # Optional: configure in repository Secrets to enable live AI generation in production.
+          # Can come from repository secrets or environment-bound secrets.
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
         run: npm run build
 
