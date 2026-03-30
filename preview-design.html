@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MarketerAI — Design Preview</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            sage: { 50:'#F4F6F2',100:'#E8EBE4',200:'#D4D9CE',300:'#B3BCAB',400:'#8F9C85',500:'#6E7D64',600:'#56634F',700:'#434D3E',800:'#394134',900:'#2F362C' },
+            lavender: { 50:'#F5F3FA',100:'#EBE8F4',200:'#D8D3EA',300:'#C4BDD9',400:'#A89DC5',500:'#8B7DAE' },
+            warm: { 50:'#FEFDFB',100:'#FBF9F5',200:'#F5F2EB',300:'#EDE9DF',400:'#D9D3C6',500:'#B8B0A0' },
+            ink: { 900:'#1A1917',800:'#2D2C28',700:'#3F3E39',600:'#5A5852',500:'#7A786F',400:'#9B998F',300:'#BFBDB4',200:'#DDDBD5',100:'#EEEDEA' }
+          },
+          fontFamily: {
+            serif: ['DM Serif Display','Georgia','serif'],
+            sans: ['DM Sans','system-ui','sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    * { margin:0;padding:0;box-sizing:border-box; }
+    body { font-family:'DM Sans',system-ui,sans-serif;background:#FAFAF7;color:#1A1917;-webkit-font-smoothing:antialiased; }
+    body::before { content:'';position:fixed;top:0;left:0;right:0;bottom:0;opacity:0.018;pointer-events:none;z-index:9999;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");background-repeat:repeat;background-size:256px 256px; }
+    .ambient-bg { background:radial-gradient(ellipse 800px 600px at 20% 10%,rgba(143,156,133,0.06) 0%,transparent 70%),radial-gradient(ellipse 600px 500px at 80% 80%,rgba(212,208,234,0.08) 0%,transparent 70%),radial-gradient(ellipse 400px 400px at 50% 50%,rgba(245,242,235,0.5) 0%,transparent 70%); }
+    .float-card { background:#FFF;border:1px solid #F5F2EB;box-shadow:0 0 0 1px rgba(0,0,0,0.01),0 2px 8px rgba(0,0,0,0.03),0 12px 40px rgba(0,0,0,0.05); }
+    .elevated-card { background:#FFF;border:1px solid #EEEDEA;box-shadow:0 1px 3px rgba(0,0,0,0.02),0 8px 32px rgba(0,0,0,0.04);transition:box-shadow 0.4s cubic-bezier(0.16,1,0.3,1),transform 0.4s cubic-bezier(0.16,1,0.3,1); }
+    .elevated-card:hover { box-shadow:0 2px 4px rgba(0,0,0,0.02),0 12px 48px rgba(0,0,0,0.07);transform:translateY(-2px); }
+    .pill { display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:100px;font-size:12px;font-weight:500;letter-spacing:0.02em; }
+    .divider { height:1px;background:linear-gradient(90deg,transparent,#EEEDEA 20%,#EEEDEA 80%,transparent); }
+    .font-display { font-family:'DM Serif Display',Georgia,serif; }
+    .no-scrollbar::-webkit-scrollbar { display:none; }
+    .no-scrollbar { -ms-overflow-style:none;scrollbar-width:none; }
+    @keyframes fadeUp { from { opacity:0;transform:translateY(12px); } to { opacity:1;transform:translateY(0); } }
+    .animate-fadeUp { animation: fadeUp 0.7s cubic-bezier(0.16,1,0.3,1) forwards; }
+    .delay-1 { animation-delay: 0.05s; opacity:0; }
+    .delay-2 { animation-delay: 0.1s; opacity:0; }
+    .delay-3 { animation-delay: 0.15s; opacity:0; }
+    .delay-4 { animation-delay: 0.2s; opacity:0; }
+    .delay-5 { animation-delay: 0.25s; opacity:0; }
+    .delay-6 { animation-delay: 0.3s; opacity:0; }
+    .delay-7 { animation-delay: 0.35s; opacity:0; }
+    .delay-8 { animation-delay: 0.4s; opacity:0; }
+  </style>
+</head>
+<body class="min-h-screen ambient-bg selection:bg-sage-100 selection:text-sage-900">
+
+  <!-- Navigation -->
+  <nav class="w-full px-6 md:px-10 py-6 flex justify-between items-center max-w-7xl mx-auto animate-fadeUp">
+    <div class="flex items-center gap-3">
+      <div class="w-9 h-9 bg-ink-900 rounded-xl flex items-center justify-center">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/><path d="M5 3v4"/><path d="M19 17v4"/><path d="M3 5h4"/><path d="M17 19h4"/></svg>
+      </div>
+      <span class="text-lg font-semibold tracking-tight text-ink-900">MarketerAI</span>
+    </div>
+    <div class="flex items-center gap-2">
+      <button class="text-sm font-medium text-ink-500 hover:text-ink-900 transition-colors px-4 py-2">Pricing</button>
+      <button class="text-sm font-medium text-ink-500 hover:text-ink-900 transition-colors px-4 py-2">Docs</button>
+      <button class="pill bg-ink-900 text-white font-medium text-sm hover:bg-ink-800 transition-colors cursor-pointer">
+        Book a Demo
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 7h10v10"/><path d="M7 17 17 7"/></svg>
+      </button>
+    </div>
+  </nav>
+
+  <main class="w-full flex flex-col items-center">
+
+    <!-- Hero -->
+    <div class="w-full max-w-6xl mx-auto px-6 md:px-10 pt-20 md:pt-28 pb-16 flex flex-col items-center text-center">
+      <div class="animate-fadeUp">
+        <span class="pill bg-sage-50 text-sage-600 border border-sage-200 mb-8">
+          <span class="w-1.5 h-1.5 rounded-full bg-sage-400"></span>
+          Trial Mode — 3 free workflows
+        </span>
+      </div>
+
+      <h1 class="font-display text-5xl md:text-7xl lg:text-[5.2rem] text-ink-900 mb-6 leading-[1.08] tracking-tight max-w-4xl animate-fadeUp delay-1">
+        Describe your automation.
+        <span class="text-sage-500 italic"> We'll build it.</span>
+      </h1>
+
+      <p class="text-lg md:text-xl text-ink-400 max-w-2xl mx-auto leading-relaxed mb-14 font-light animate-fadeUp delay-2">
+        Create AI-powered workflows for n8n using natural language.
+        Turn ideas into complete, import-ready automations.
+      </p>
+
+      <!-- Input Card -->
+      <div class="w-full max-w-2xl float-card rounded-3xl p-3 animate-fadeUp delay-3">
+        <div class="flex items-center gap-2">
+          <input type="text" placeholder="What do you want to automate?" class="flex-1 bg-transparent py-4 px-5 text-base md:text-lg outline-none text-ink-900 placeholder:text-ink-300 font-light" />
+          <button class="flex items-center gap-2 px-6 py-3.5 rounded-2xl text-sm font-medium bg-ink-900 text-white shadow-lg shadow-ink-900/10 whitespace-nowrap hover:bg-ink-800 transition-colors">
+            Generate
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+          </button>
+        </div>
+        <div class="mt-3 pt-3 border-t border-ink-100 flex flex-wrap gap-2 px-2 pb-1">
+          <span class="pill bg-warm-100 text-ink-500 text-xs border border-warm-300 hover:border-sage-200 hover:bg-sage-50 hover:text-sage-700 transition-all cursor-pointer">Capture Instagram leads</span>
+          <span class="pill bg-warm-100 text-ink-500 text-xs border border-warm-300 hover:border-sage-200 hover:bg-sage-50 hover:text-sage-700 transition-all cursor-pointer">Sync CRM with Sheets</span>
+          <span class="pill bg-warm-100 text-ink-500 text-xs border border-warm-300 hover:border-sage-200 hover:bg-sage-50 hover:text-sage-700 transition-all cursor-pointer">Email follow-up automation</span>
+          <span class="pill bg-warm-100 text-ink-500 text-xs border border-warm-300 hover:border-sage-200 hover:bg-sage-50 hover:text-sage-700 transition-all cursor-pointer">Slack payment alerts</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Divider -->
+    <div class="w-full max-w-6xl mx-auto px-6 md:px-10 animate-fadeUp delay-4">
+      <div class="divider mb-16"></div>
+    </div>
+
+    <!-- Features -->
+    <div class="w-full max-w-6xl mx-auto px-6 md:px-10 pb-20">
+      <div class="flex items-center gap-3 mb-12 animate-fadeUp delay-4">
+        <span class="pill bg-lavender-50 text-lavender-500 border border-lavender-200 text-xs">How it works</span>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="elevated-card rounded-2xl p-7 animate-fadeUp delay-5">
+          <div class="w-11 h-11 rounded-xl bg-sage-50 border border-sage-100 flex items-center justify-center mb-5">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#6E7D64" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 9 5 12 1.774-5.226L21 14 9 9z"/><path d="m16.071 16.071 4.243 4.243"/><path d="m7.188 2.239.777 2.897M5.136 7.965l-2.897-.777M13.95 4.05l-2.122 2.122m-5.657 5.656-2.12 2.122"/></svg>
+          </div>
+          <h4 class="text-base font-semibold text-ink-900 mb-2">Describe it naturally</h4>
+          <p class="text-sm text-ink-400 leading-relaxed">Skip the technical jargon. Just say what you need automated in plain language.</p>
+        </div>
+
+        <div class="elevated-card rounded-2xl p-7 animate-fadeUp delay-6">
+          <div class="w-11 h-11 rounded-xl bg-lavender-50 border border-lavender-100 flex items-center justify-center mb-5">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#8B7DAE" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="8" height="8" x="3" y="3" rx="2"/><path d="M7 11v4a2 2 0 0 0 2 2h4"/><rect width="8" height="8" x="13" y="13" rx="2"/></svg>
+          </div>
+          <h4 class="text-base font-semibold text-ink-900 mb-2">Import-ready workflows</h4>
+          <p class="text-sm text-ink-400 leading-relaxed">Download complete n8n JSON files ready to import. Built in minutes, not weeks.</p>
+        </div>
+
+        <div class="elevated-card rounded-2xl p-7 animate-fadeUp delay-7">
+          <div class="w-11 h-11 rounded-xl bg-warm-100 border border-warm-300 flex items-center justify-center mb-5">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#7A786F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></svg>
+          </div>
+          <h4 class="text-base font-semibold text-ink-900 mb-2">Guided configuration</h4>
+          <p class="text-sm text-ink-400 leading-relaxed">Step-by-step instructions to set up credentials and connections securely.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Templates -->
+    <div class="w-full py-16 overflow-hidden">
+      <div class="max-w-6xl mx-auto px-6 md:px-10 mb-8 flex items-end justify-between">
+        <div>
+          <span class="pill bg-warm-100 text-ink-400 border border-warm-300 text-xs mb-4 inline-flex animate-fadeUp delay-5">Templates</span>
+          <h3 class="font-display text-2xl md:text-3xl text-ink-900 mt-3 animate-fadeUp delay-6">
+            Popular <span class="text-sage-500 italic">workflows</span>
+          </h3>
+        </div>
+        <div class="flex gap-2 animate-fadeUp delay-6">
+          <button class="w-9 h-9 rounded-full border border-ink-200 flex items-center justify-center text-ink-400 hover:text-ink-900 hover:border-ink-400 transition-colors">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+          </button>
+          <button class="w-9 h-9 rounded-full border border-ink-200 flex items-center justify-center text-ink-400 hover:text-ink-900 hover:border-ink-400 transition-colors">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <div class="flex gap-5 px-6 md:px-10 overflow-x-auto no-scrollbar pb-4 animate-fadeUp delay-7">
+        <!-- Card 1 -->
+        <div class="flex-shrink-0 w-72 elevated-card rounded-2xl p-6 cursor-pointer group">
+          <div class="flex justify-between items-start mb-5">
+            <div class="w-11 h-11 rounded-xl bg-pink-50 border border-pink-100 flex items-center justify-center">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#EC4899" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/></svg>
+            </div>
+            <span class="pill bg-warm-100 text-ink-400 text-[10px] border border-warm-300">Social</span>
+          </div>
+          <h4 class="text-base font-semibold text-ink-900 mb-1.5">Instagram to Notion</h4>
+          <p class="text-sm text-ink-400 leading-relaxed">Auto-capture social leads into your workspace database</p>
+        </div>
+
+        <!-- Card 2 -->
+        <div class="flex-shrink-0 w-72 elevated-card rounded-2xl p-6 cursor-pointer group">
+          <div class="flex justify-between items-start mb-5">
+            <div class="w-11 h-11 rounded-xl bg-sage-50 border border-sage-100 flex items-center justify-center">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#6E7D64" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 16.98h-5.99c-1.1 0-1.95.94-2.48 1.9A4 4 0 0 1 2 17c.01-.7.2-1.4.57-2"/><path d="m6 17 3.13-5.78c.53-.97.1-2.18-.5-3.1a4 4 0 1 1 6.89-4.06"/><path d="m12 6 3.13 5.73C15.66 12.7 16.9 13 18 13a4 4 0 0 1 .8 7.93"/></svg>
+            </div>
+            <span class="pill bg-warm-100 text-ink-400 text-[10px] border border-warm-300">Messaging</span>
+          </div>
+          <h4 class="text-base font-semibold text-ink-900 mb-1.5">Webhook to Slack</h4>
+          <p class="text-sm text-ink-400 leading-relaxed">Instant team notifications when custom events fire</p>
+        </div>
+
+        <!-- Card 3 -->
+        <div class="flex-shrink-0 w-72 elevated-card rounded-2xl p-6 cursor-pointer group">
+          <div class="flex justify-between items-start mb-5">
+            <div class="w-11 h-11 rounded-xl bg-lavender-50 border border-lavender-100 flex items-center justify-center">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#8B7DAE" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg>
+            </div>
+            <span class="pill bg-warm-100 text-ink-400 text-[10px] border border-warm-300">Data</span>
+          </div>
+          <h4 class="text-base font-semibold text-ink-900 mb-1.5">Chatbot to Sheets</h4>
+          <p class="text-sm text-ink-400 leading-relaxed">Collect and store conversations automatically</p>
+        </div>
+
+        <!-- Card 4 -->
+        <div class="flex-shrink-0 w-72 elevated-card rounded-2xl p-6 cursor-pointer group">
+          <div class="flex justify-between items-start mb-5">
+            <div class="w-11 h-11 rounded-xl bg-amber-50 border border-amber-100 flex items-center justify-center">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#D97706" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+            </div>
+            <span class="pill bg-warm-100 text-ink-400 text-[10px] border border-warm-300">CRM</span>
+          </div>
+          <h4 class="text-base font-semibold text-ink-900 mb-1.5">Email to HubSpot</h4>
+          <p class="text-sm text-ink-400 leading-relaxed">Parse incoming inquiries into CRM contacts</p>
+        </div>
+
+        <!-- Card 5 -->
+        <div class="flex-shrink-0 w-72 elevated-card rounded-2xl p-6 cursor-pointer group">
+          <div class="flex justify-between items-start mb-5">
+            <div class="w-11 h-11 rounded-xl bg-indigo-50 border border-indigo-100 flex items-center justify-center">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#6366F1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></svg>
+            </div>
+            <span class="pill bg-warm-100 text-ink-400 text-[10px] border border-warm-300">Payments</span>
+          </div>
+          <h4 class="text-base font-semibold text-ink-900 mb-1.5">Stripe to Discord</h4>
+          <p class="text-sm text-ink-400 leading-relaxed">Celebrate new sales with the whole team</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom CTA -->
+    <div class="w-full max-w-5xl mx-auto px-6 md:px-10 py-24 animate-fadeUp delay-8">
+      <div class="relative rounded-[2rem] overflow-hidden">
+        <div class="absolute inset-0 bg-ink-900"></div>
+        <div class="absolute inset-0 opacity-[0.04]" style="background-image:radial-gradient(circle at 1px 1px,white 1px,transparent 0);background-size:24px 24px"></div>
+        <div class="absolute -top-20 -right-20 w-64 h-64 rounded-full bg-sage-500/10 blur-3xl"></div>
+        <div class="absolute -bottom-20 -left-20 w-64 h-64 rounded-full bg-lavender-400/10 blur-3xl"></div>
+        <div class="relative p-12 md:p-16 flex flex-col md:flex-row items-center justify-between gap-10">
+          <div class="flex-1">
+            <h3 class="font-display text-3xl md:text-4xl text-white mb-4 leading-tight">
+              Ready to automate <span class="text-sage-300 italic">your marketing?</span>
+            </h3>
+            <p class="text-ink-400 text-base max-w-md leading-relaxed">
+              Build your first 3 workflows free. No credit card, no technical setup required.
+            </p>
+          </div>
+          <div class="flex flex-col sm:flex-row gap-3">
+            <button class="px-7 py-4 bg-white text-ink-900 rounded-2xl font-semibold text-sm flex items-center gap-2 shadow-lg hover:shadow-xl transition-shadow">
+              Start your trial
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+            </button>
+            <button class="px-7 py-4 bg-white/10 text-white hover:bg-white/15 rounded-2xl font-medium text-sm transition-colors border border-white/10">
+              Book a Demo
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="w-full py-10 px-6 md:px-10">
+    <div class="divider mb-10"></div>
+    <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
+      <div class="flex items-center gap-2.5">
+        <div class="w-7 h-7 bg-ink-900 rounded-lg flex items-center justify-center">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/></svg>
+        </div>
+        <span class="text-sm font-semibold text-ink-900">MarketerAI</span>
+      </div>
+      <p class="text-ink-300 text-xs tracking-wide">&copy; 2026 MarketerAI. All rights reserved.</p>
+      <div class="flex gap-6">
+        <a href="#" class="text-xs font-medium text-ink-400 hover:text-ink-900 transition-colors">Twitter</a>
+        <a href="#" class="text-xs font-medium text-ink-400 hover:text-ink-900 transition-colors">GitHub</a>
+        <a href="#" class="text-xs font-medium text-ink-400 hover:text-ink-900 transition-colors">LinkedIn</a>
+        <a href="#" class="text-xs font-medium text-ink-400 hover:text-ink-900 transition-colors">Contact</a>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

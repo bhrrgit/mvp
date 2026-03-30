@@ -1,0 +1,192 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MarketerAI — Intelligent Workflow Builder</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet">
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              surface: '#FAFAF7',
+              card: '#FFFFFF',
+              sage: {
+                50: '#F4F6F2',
+                100: '#E8EBE4',
+                200: '#D4D9CE',
+                300: '#B3BCAB',
+                400: '#8F9C85',
+                500: '#6E7D64',
+                600: '#56634F',
+                700: '#434D3E',
+                800: '#394134',
+                900: '#2F362C',
+              },
+              lavender: {
+                50: '#F5F3FA',
+                100: '#EBE8F4',
+                200: '#D8D3EA',
+                300: '#C4BDD9',
+                400: '#A89DC5',
+                500: '#8B7DAE',
+              },
+              warm: {
+                50: '#FEFDFB',
+                100: '#FBF9F5',
+                200: '#F5F2EB',
+                300: '#EDE9DF',
+                400: '#D9D3C6',
+                500: '#B8B0A0',
+              },
+              ink: {
+                900: '#1A1917',
+                800: '#2D2C28',
+                700: '#3F3E39',
+                600: '#5A5852',
+                500: '#7A786F',
+                400: '#9B998F',
+                300: '#BFBDB4',
+                200: '#DDDBD5',
+                100: '#EEEDEA',
+              }
+            },
+            fontFamily: {
+              serif: ['DM Serif Display', 'Georgia', 'serif'],
+              sans: ['DM Sans', 'system-ui', 'sans-serif'],
+            },
+          }
+        }
+      }
+    </script>
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      body {
+        font-family: 'DM Sans', system-ui, sans-serif;
+        background-color: #FAFAF7;
+        overflow-x: hidden;
+        color: #1A1917;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+      }
+
+      /* Subtle grain texture */
+      body::before {
+        content: '';
+        position: fixed;
+        top: 0; left: 0; right: 0; bottom: 0;
+        opacity: 0.018;
+        pointer-events: none;
+        z-index: 9999;
+        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+        background-repeat: repeat;
+        background-size: 256px 256px;
+      }
+
+      /* Glass card */
+      .glass-card {
+        background: rgba(255, 255, 255, 0.88);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.9);
+        box-shadow:
+          0 1px 2px rgba(0, 0, 0, 0.02),
+          0 4px 16px rgba(0, 0, 0, 0.04);
+      }
+
+      /* Elevated card */
+      .elevated-card {
+        background: #FFFFFF;
+        border: 1px solid #EEEDEA;
+        box-shadow:
+          0 1px 3px rgba(0, 0, 0, 0.02),
+          0 8px 32px rgba(0, 0, 0, 0.04);
+        transition: box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1), transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      .elevated-card:hover {
+        box-shadow:
+          0 2px 4px rgba(0, 0, 0, 0.02),
+          0 12px 48px rgba(0, 0, 0, 0.07);
+        transform: translateY(-2px);
+      }
+
+      /* Soft floating */
+      .float-card {
+        background: #FFFFFF;
+        border: 1px solid #F5F2EB;
+        box-shadow:
+          0 0 0 1px rgba(0, 0, 0, 0.01),
+          0 2px 8px rgba(0, 0, 0, 0.03),
+          0 12px 40px rgba(0, 0, 0, 0.05);
+      }
+
+      /* Pill badge */
+      .pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 6px 14px;
+        border-radius: 100px;
+        font-size: 12px;
+        font-weight: 500;
+        letter-spacing: 0.02em;
+      }
+
+      /* Ambient background */
+      .ambient-bg {
+        background:
+          radial-gradient(ellipse 800px 600px at 20% 10%, rgba(143, 156, 133, 0.06) 0%, transparent 70%),
+          radial-gradient(ellipse 600px 500px at 80% 80%, rgba(212, 208, 234, 0.08) 0%, transparent 70%),
+          radial-gradient(ellipse 400px 400px at 50% 50%, rgba(245, 242, 235, 0.5) 0%, transparent 70%);
+      }
+
+      /* Smooth scrollbar */
+      ::-webkit-scrollbar { width: 6px; }
+      ::-webkit-scrollbar-track { background: transparent; }
+      ::-webkit-scrollbar-thumb { background: #D9D3C6; border-radius: 3px; }
+
+      /* No scrollbar for carousel */
+      .no-scrollbar::-webkit-scrollbar { display: none; }
+      .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+      /* Input focus ring */
+      .focus-ring:focus {
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(143, 156, 133, 0.15);
+        border-color: #B3BCAB;
+      }
+
+      /* Serif display */
+      .font-display {
+        font-family: 'DM Serif Display', Georgia, serif;
+      }
+
+      /* Subtle divider */
+      .divider {
+        height: 1px;
+        background: linear-gradient(90deg, transparent, #EEEDEA 20%, #EEEDEA 80%, transparent);
+      }
+    </style>
+  <script type="importmap">
+{
+  "imports": {
+    "react/": "https://esm.sh/react@^19.2.4/",
+    "react": "https://esm.sh/react@^19.2.4",
+    "react-dom/": "https://esm.sh/react-dom@^19.2.4/",
+    "@google/genai": "https://esm.sh/@google/genai@^1.40.0",
+    "lucide-react": "https://esm.sh/lucide-react@^0.563.0",
+    "framer-motion": "https://esm.sh/framer-motion@^12.33.0"
+  }
+}
+</script>
+</head>
+  <body>
+    <div id="root"></div>
+  <script type="module" src="/index.tsx"></script>
+</body>
+</html>
