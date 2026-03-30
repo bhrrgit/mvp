@@ -30,7 +30,7 @@ export type Milliseconds   = Brand<number, 'Milliseconds'>;
 // ─── 2. Allowed Gemini models – single source of truth ───────────────────────
 
 const GEMINI_MODELS = [
-  gemini-3-flash-preview,
+  'gemini-3-flash-preview',
 ] as const;
 
 export type GeminiModel = (typeof GEMINI_MODELS)[number];
@@ -44,7 +44,7 @@ export type EnvKey = GeminiEnvKey | AppEnvKey;
 // ─── 4. Defaults validated with `satisfies` ───────────────────────────────────
 //
 // `satisfies` checks the shape without widening, so ENV_DEFAULTS.GEMINI_MODEL
-// stays the literal `'gemini-2.0-flash'`, not the wide `string`.
+// stays the literal `'gemini-3-flash-preview'`, not the wide `string`.
 
 const ENV_DEFAULTS = {
   GEMINI_MODEL:      'gemini-3-flash-preview',

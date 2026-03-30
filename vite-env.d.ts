@@ -37,7 +37,7 @@ declare namespace NodeJS {
     /**
      * Gemini model identifier.
      * Must be one of the values in GEMINI_MODELS (config/env.ts).
-     * Defaults to 'gemini-2.0-flash'.
+     * Defaults to 'gemini-3-flash-preview'.
      */
     readonly GEMINI_MODEL?: string;
     /**
