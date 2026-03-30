@@ -30,10 +30,7 @@ export type Milliseconds   = Brand<number, 'Milliseconds'>;
 // ─── 2. Allowed Gemini models – single source of truth ───────────────────────
 
 const GEMINI_MODELS = [
-  'gemini-2.0-flash',
-  'gemini-2.0-flash-lite',
-  'gemini-1.5-flash',
-  'gemini-1.5-pro',
+  gemini-3-flash-preview,
 ] as const;
 
 export type GeminiModel = (typeof GEMINI_MODELS)[number];
@@ -50,7 +47,7 @@ export type EnvKey = GeminiEnvKey | AppEnvKey;
 // stays the literal `'gemini-2.0-flash'`, not the wide `string`.
 
 const ENV_DEFAULTS = {
-  GEMINI_MODEL:      'gemini-2.0-flash',
+  GEMINI_MODEL:      'gemini-3-flash-preview',
   GEMINI_TIMEOUT_MS: '30000',
   VITE_BASE_PATH:    '/',
 } satisfies Partial<Record<EnvKey, string>>;
