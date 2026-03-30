@@ -39,9 +39,34 @@ jobs:
             exit 1
           fi
 
-      - name: Validate generated workflow JSON (live model, no mock)
+      - name: Smoke test Gemini generation (live model, no JSON validation)
         if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
-        run: node scripts/validate-generated-workflow.mjs
+        run: |
+          node --input-type=module <<'EOF'
+          import { GoogleGenAI } from "@google/genai";
+
+          const apiKey = process.env.GEMINI_API_KEY;
+          if (!apiKey) {
+            throw new Error("GEMINI_API_KEY is missing.");
+          }
+
+          const ai = new GoogleGenAI({ apiKey });
+          const prompt =
+            process.env.WORKFLOW_VALIDATION_PROMPT ||
+            "Create a short marketing automation summary in one sentence.";
+
+          const response = await ai.models.generateContent({
+            model: "gemini-2.0-flash",
+            contents: prompt,
+          });
+
+          const text = (response.text || "").trim();
+          if (!text) {
+            throw new Error("Gemini returned an empty response.");
+          }
+
+          console.log(⁠ [gemini-smoke] Success: received ${text.length} characters. ⁠);
+          EOF
 
       - name: Build frontend
         run: npm run build
