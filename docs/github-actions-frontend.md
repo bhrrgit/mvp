@@ -8,6 +8,7 @@ Foram adicionados os arquivos e ajustes abaixo:
 
 - `.github/workflows/frontend-ci.yml`
   - Valida instalação de dependências e build em `push` e `pull_request` para `main`.
+  - Em `push` para `main`, executa um smoke test real (sem mock) da geração via Gemini, exigindo apenas resposta não vazia.
 - `.github/workflows/deploy-frontend-pages.yml`
   - Publica automaticamente no GitHub Pages em `push` para `main`.
   - Também permite execução manual via `workflow_dispatch`.
@@ -57,6 +58,7 @@ Se quiser que a funcionalidade de geração com Gemini funcione no ambiente publ
 
 Observação:
 - Sem esse secret, o site publica normalmente, mas a parte de geração por IA pode falhar em runtime.
+- O CI em `push` para `main` também falha sem esse secret, pois o smoke test sem mock depende da chamada real ao Gemini.
 
 ## 6. Executar e acompanhar os workflows
 
@@ -113,6 +115,7 @@ Correção:
   - Checkout
   - Setup Node 20 + cache npm
   - `npm ci`
+  - smoke test sem mock chamando Gemini (somente `push` na `main`)
   - `npm run build`
 
 - `deploy-frontend-pages.yml`
