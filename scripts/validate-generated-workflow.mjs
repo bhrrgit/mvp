@@ -9,7 +9,7 @@ if (!apiKey) {
   process.exit(1);
 }
 
-const MODEL_ID = "gemini-2.0-flash";
+const MODEL_ID = "gemini-3-flash-preview";
 const VALIDATION_PROMPT =
   process.env.WORKFLOW_VALIDATION_PROMPT ||
   "Capture Instagram leads via webhook, append to Google Sheets, then send a welcome email.";
