@@ -8,6 +8,7 @@ import { SUGGESTIONS } from '../constants';
 import PrebuiltCarousel from '../components/PrebuiltCarousel';
 import LoadingState from '../components/LoadingState';
 import ResultView from '../components/ResultView';
+import PurchaseRequestForm from '../components/PurchaseRequestForm';
 import { SoftReveal, StaggerContainer, StaggerItem } from '../components/MotionWrapper';
 
 const features = [
@@ -190,6 +191,8 @@ const HomePage: React.FC = () => {
                 </div>
               </div>
             </div>
+
+            <PurchaseRequestForm className="mt-7" />
           </SoftReveal>
         </motion.section>
       )}
