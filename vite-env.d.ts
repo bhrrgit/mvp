@@ -15,6 +15,8 @@
 interface ImportMetaEnv {
   /** Public base path for the app (e.g. "/" or "/marketerai/") */
   readonly VITE_BASE_PATH?: string;
+  /** Optional public Gemini API key alias */
+  readonly VITE_GEMINI_API_KEY?: string;
 }
 
 interface ImportMeta {

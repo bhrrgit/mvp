@@ -114,17 +114,59 @@ function isGeminiModel(value: string): value is GeminiModel {
 // ─── 8. Low-level env reader ──────────────────────────────────────────────────
 //
 // Works in all three execution contexts:
-//   a) Browser bundle – Vite's `define` replaced `process.env.*` at build time.
+//   a) Browser bundle – Vite can replace literal `process.env.X` references.
 //   b) Node.js / CI  – `process.env` is the real OS environment.
 //   c) Unit tests    – same as (b), or overridden via test setup.
+//
+// IMPORTANT:
+// We intentionally avoid dynamic access (`process.env[key]`) because Vite's
+// `define` replacement only rewrites static property accesses.
 
-function readRaw(key: EnvKey): string {
+function readProcessEnvLiteral(key: EnvKey): string {
   try {
-    const val = (process as NodeJS.Process).env[key as string];
-    return isNonEmptyString(val) ? val : '';
+    switch (key) {
+      case 'GEMINI_API_KEY':
+        return isNonEmptyString(process.env.GEMINI_API_KEY) ? process.env.GEMINI_API_KEY : '';
+      case 'VITE_GEMINI_API_KEY':
+        return isNonEmptyString(process.env.VITE_GEMINI_API_KEY) ? process.env.VITE_GEMINI_API_KEY : '';
+      case 'API_KEY':
+        return isNonEmptyString(process.env.API_KEY) ? process.env.API_KEY : '';
+      case 'GEMINI_MODEL':
+        return isNonEmptyString(process.env.GEMINI_MODEL) ? process.env.GEMINI_MODEL : '';
+      case 'GEMINI_TIMEOUT_MS':
+        return isNonEmptyString(process.env.GEMINI_TIMEOUT_MS) ? process.env.GEMINI_TIMEOUT_MS : '';
+      case 'VITE_BASE_PATH':
+        return isNonEmptyString(process.env.VITE_BASE_PATH) ? process.env.VITE_BASE_PATH : '';
+      default:
+        return '';
+    }
   } catch {
     return '';
   }
+}
+
+function readImportMetaEnv(key: EnvKey): string {
+  try {
+    const env = import.meta.env as ImportMetaEnv;
+    switch (key) {
+      case 'VITE_GEMINI_API_KEY':
+        return isNonEmptyString(env.VITE_GEMINI_API_KEY) ? env.VITE_GEMINI_API_KEY : '';
+      case 'VITE_BASE_PATH':
+        return isNonEmptyString(env.VITE_BASE_PATH) ? env.VITE_BASE_PATH : '';
+      default:
+        return '';
+    }
+  } catch {
+    return '';
+  }
+}
+
+function readRaw(key: EnvKey): string {
+  const fromProcess = readProcessEnvLiteral(key);
+  if (isNonEmptyString(fromProcess)) {
+    return fromProcess;
+  }
+  return readImportMetaEnv(key);
 }
 
 // ─── 9. Field resolvers – return nullable values, no discriminated union ──────

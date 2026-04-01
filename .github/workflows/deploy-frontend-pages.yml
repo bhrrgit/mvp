@@ -53,9 +53,10 @@ jobs:
       - name: Ensure GEMINI_API_KEY is available for production build
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          VITE_GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
         run: |
-          if [ -z "$GEMINI_API_KEY" ]; then
-            echo "GEMINI_API_KEY is missing in this job context."
+          if [ -z "$GEMINI_API_KEY" ] && [ -z "$VITE_GEMINI_API_KEY" ]; then
+            echo "GEMINI_API_KEY/VITE_GEMINI_API_KEY is missing in this job context."
             echo "If you stored it as an Environment secret, make sure this job is bound to that environment."
             exit 1
           fi
@@ -64,6 +65,7 @@ jobs:
         env:
           # Can come from repository secrets or environment-bound secrets.
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          VITE_GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
         run: npm run build
 
       - name: Upload static artifact
